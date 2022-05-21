@@ -5,6 +5,7 @@ const {
   getAllProductController,
   deleteProductController,
   getSingleProductController,
+  searchProductController,
 } = require("../controllers/productController");
 const productValidation = require("../validations/productValidation");
 const authorized = require("../middlewares/authorized");
@@ -15,6 +16,7 @@ router.post(
   createProductController
 );
 router.get("/", authorized, getAllProductController);
+router.get("/search", authorized, searchProductController);
 router.put(
   "/updateProduct/:productId",
   authorized,

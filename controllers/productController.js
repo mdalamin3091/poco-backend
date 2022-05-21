@@ -2,10 +2,11 @@ const { validationResult } = require("express-validator");
 const errorFormater = require("../utils/errorFormater");
 const Product = require("../models/Product");
 const Category = require("../models/Category");
+
+// create product
 const createProductController = async (req, res) => {
   try {
     const { name, title, price, description, category } = req.body;
-    console.log(req.body);
     const errors = validationResult(req).formatWith(errorFormater);
     if (!errors.isEmpty()) {
       console.log(errors.mapped());
@@ -18,20 +19,16 @@ const createProductController = async (req, res) => {
       category,
     });
     const createProduct = await product.save();
-    // await Category.updateOne(
-    //   { categoryName: category },
-    //   {
-    //     $push: {
-    //       products: createProduct._id,
-    //     },
-    //   }
-    // );
-    res.status(200).json("Product Created Successfull", createProduct);
+    res
+      .status(200)
+      .json({ msg: "Product Created Successfull", product: createProduct });
   } catch (error) {
     console.log(error);
-    return res.status(500).json("Internal Server Error");
+    return res.status(500).json(error);
   }
 };
+
+// update product
 const updateProductController = async (req, res) => {
   try {
     const { productId } = req.params;
@@ -53,32 +50,39 @@ const updateProductController = async (req, res) => {
       },
       { new: true }
     );
-    res.status(200).json("Product updated", updateProduct);
+    res.status(200).json({ msg: "Product updated", updateProduct });
   } catch (error) {
     console.log(error);
     return res.status(500).json("Internal Server Error");
   }
 };
+
+// delete product
 const deleteProductController = async (req, res) => {
   try {
     const { productId } = req.params;
     const deleteProduct = await Product.findByIdAndDelete({ _id: productId });
-    console.log(deleteProduct);
-    res.status(200).json("Product", deleteProduct);
+    res.status(200).json({ msg: "Product deleted", deleteProduct });
   } catch (error) {
     console.log(error);
     return res.status(500).json("Internal Server Error");
   }
 };
+
+// get all product
 const getAllProductController = async (req, res) => {
   try {
-    const allProducts = await Product.find({});
-    res.status(200).json("All product", allProducts);
+    // const { category } = req.query;
+    const allProducts = await Product.find();
+    console.log(allProducts);
+    return res.status(200).json({ msg: "All product", allProducts });
   } catch (error) {
     console.log(error);
     return res.status(500).json("Internal Server Error");
   }
 };
+
+// get single product
 const getSingleProductController = async (req, res) => {
   try {
     const { productId } = req.params;
@@ -91,10 +95,29 @@ const getSingleProductController = async (req, res) => {
   }
 };
 
+const searchProductController = async (req, res) => {
+  try {
+    const { category } = req.query;
+    let query = {};
+    if (category !== null) {
+      query.category = category;
+    }
+    const products = await Product.find(query);
+    if (products.length < 1) {
+      return res.status(200).json({ msg: "Product not found" });
+    }
+    res.status(200).json({ msg: "Product found", products });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("Internal Server Error");
+  }
+};
+
 module.exports = {
   getSingleProductController,
   getAllProductController,
   createProductController,
   updateProductController,
   deleteProductController,
+  searchProductController,
 };
