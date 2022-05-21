@@ -1,6 +1,8 @@
 const Category = require("../models/Category");
 const { validationResult } = require("express-validator");
 const errorFormater = require("../utils/errorFormater");
+const Product = require("../models/Product");
+// create category
 const createCategoryController = async (req, res) => {
   const { categoryName, categoryImage } = req.body;
   const errors = validationResult(req).formatWith(errorFormater);
@@ -19,12 +21,37 @@ const createCategoryController = async (req, res) => {
     res.status(200).json("Category Created", createCategory);
   } catch (error) {
     console.log(error);
-    return res.status(500).json("Internal Server Error"); 
+    return res.status(500).json("Internal Server Error");
   }
 };
+// get all category
+const getAllCategoryController = async (req, res) => {
+  try {
+    const allCategory = await Category.find({});
+    console.log(allCategory);
+    res.status(200).json("All category", allCategory);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("Internal Server Error");
+  }
+};
+// update category
 const updateCategoryController = async (req, res) => {
   try {
     const { categoryId } = req.params;
+    const findCategory = await Category.findOne({ _id: categoryId });
+    const findProduct = await Product.find({
+      category: findCategory.categoryName,
+    });
+    const updateProduct = await Product.updateMany(
+      { category: findCategory.categoryName },
+      {
+        $set: {
+          category: req.body.categoryName,
+        },
+      },
+      { new: true }
+    );
     const updateCategory = await Category.findOneAndUpdate(
       { _id: categoryId },
       {
@@ -34,15 +61,35 @@ const updateCategoryController = async (req, res) => {
       },
       { new: true }
     );
-    const updateCategorySave = await updateCategory.save();
-    console.log(updateCategorySave)
-    return res.status(200).json("Category Updated", updateCategorySave); 
+    return res.status(200).json("Category Updated", updateCategory);
   } catch (error) {
     console.log(error);
     return res.status(500).json("Internal Server Error");
   }
 };
+// delete category
+const deleteCategoryController = async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+    const findCategory = await Category.findOne({ _id: categoryId });
+    const deleteProducts = await Product.deleteMany({
+      category: findCategory.categoryName,
+    });
+    const deleteCategory = await Category.findByIdAndDelete({
+      _id: categoryId,
+    });
+    res
+      .status(200)
+      .json("Delete your category with this category product", deleteCategory);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("Internal Server Error");
+  }
+};
+
 module.exports = {
   createCategoryController,
+  getAllCategoryController,
   updateCategoryController,
+  deleteCategoryController,
 };

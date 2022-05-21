@@ -10,7 +10,7 @@ const comparePassword = async (password, userPassword) => {
   return await bcrypt.compare(password, userPassword);
 };
 const createToken = async (user) => {
-  return jwt.sign(user, JWT_SECRET, { expiresIn: "2 d" });
+  return jwt.sign(user, JWT_SECRET, { expiresIn: "7 d" });
 };
 
 module.exports = {

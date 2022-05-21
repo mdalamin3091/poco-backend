@@ -11,13 +11,7 @@ const categorySchema = new Schema(
     categoryImage: {
       type: String,
       default: "https://i.ibb.co/1bwN1v4/category-11.png",
-    },
-    products: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Product",
-      },
-    ],
+    }
   },
   {
     timestamps: true,

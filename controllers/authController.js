@@ -53,7 +53,7 @@ const loginController = async (req, res) => {
           fullname: user.fullname,
           password: user.password,
         }); 
-        console.log(user, token) 
+        console.log(user, token)  
         res.status(200).json("Login Successfull", token);
       } else {
         return res.status(400).json("password not Found");
