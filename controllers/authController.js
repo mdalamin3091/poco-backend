@@ -1,16 +1,18 @@
 const { validationResult } = require("express-validator");
 const errorFormater = require("../utils/errorFormater");
 const User = require("../models/User");
+const jwt = require("jsonwebtoken");
+const {JWT_SECRET} = require("../config/envConfig")
 const {
   hashPassword,
   comparePassword,
-  createToken,
 } = require("../authentication/authontication");
 // sign up
 const signupController = async (req, res) => {
   try {
-    const { fullname, email, password} = req.body;
-    const errors = validationResult(req).formatWith(errorFormater);
+    console.log(req.file)
+    const { fullname, email, password, profilePic } = req.body;
+    const errors = validationResult(req).formatWith(errorFormater); 
     if (!errors.isEmpty()) {
       res.json({
         error: errors.mapped(),
@@ -20,22 +22,23 @@ const signupController = async (req, res) => {
     const newUser = await User.create({
       fullname,
       email,
-      password: await hashPassword(password),
+      profilePic,
+      password,
     });
-    console.log(newUser);
-    const token = createToken({
-      id: newUser._id,
-      fullname: newUser.fullname,
-      password: newUser.password,
-    });
-    return res.status(201).json("Successfully user created", token);
+    console.log(newUser); 
+    const token = jwt.sign(
+      { id: newUser._id, fullname: newUser.fullname, password: newUser.password },
+      JWT_SECRET,
+      { expiresIn: "7 d" }
+    );
+    return res.status(201).json({ msg: "Your account successfully created", newUser, token });
   } catch (error) {
     console.log(error);
-    return res.status(500).json(error);
+    return res.status(500).json(error);  
   }
 };
 // login
-const loginController = async (req, res) => {
+const loginController = async (req, res) => { 
   try {
     const { email, password } = req.body;
     const errors = validationResult(req).formatWith(errorFormater);
@@ -48,18 +51,17 @@ const loginController = async (req, res) => {
     const user = await User.findOne({ email });
     if (user) {
       if (await comparePassword(password, user.password)) {
-        const token = createToken({
-          id: user._id,
-          fullname: user.fullname,
-          password: user.password,
-        }); 
-        console.log(user, token)  
-        res.status(200).json("Login Successfull", token);
+        const token = jwt.sign(
+          { id: user._id, fullname: user.fullname, password: user.password },
+          JWT_SECRET,
+          { expiresIn: "7 d" }
+        );
+        return res.status(200).json({msg:"Login Successfull", token, user });
       } else {
         return res.status(400).json("password not Found");
-      }
+      } 
     } else {
-      return res.status(400).json("Email not Found"); 
+      return res.status(400).json("Email not Found");
     }
   } catch (error) {
     console.log(error);

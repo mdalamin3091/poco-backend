@@ -8,6 +8,7 @@ const signupValidation = [
     .trim()
     .withMessage("fullname is required"),
   body("email")
+    .not()
     .isEmail()
     .withMessage("Please provide a valid email")
     .custom(async (email) => {
@@ -32,7 +33,7 @@ const loginValidation = [
         return Promise.reject("Email not found");
       }
     })
-    .normalizeEmail(), 
+    .normalizeEmail(),
   body("password")
     .isLength({ min: 6 })
     .withMessage("password should be 6 characters long"),

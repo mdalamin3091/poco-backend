@@ -23,6 +23,12 @@ const productSchema = new Schema(
       type: Number,
       required: true,
     },
+    images: [
+      {
+        type: String,
+        default: "https://i.ibb.co/1bwN1v4/category-11.png",
+      },
+    ],
     category: {
       type: String,
       required: true,
