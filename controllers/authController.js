@@ -11,13 +11,13 @@ const signupController = async (req, res) => {
     const { fullname, email, password, profilePic } = req.body;
     const errors = validationResult(req).formatWith(errorFormater);
     if (!errors.isEmpty()) {
-      res.json({
+      return res.status(400).json({
         error: errors.mapped(),
         value: { fullname, email, password },
       });
     }
     const newUser = await User.create({
-      fullname,
+      fullname, 
       email,
       profilePic,
       password: await bcrypt.hash(password, 10),
@@ -40,7 +40,7 @@ const loginController = async (req, res) => {
     const { email, password } = req.body;
     const errors = validationResult(req).formatWith(errorFormater);
     if (!errors.isEmpty()) {
-      res.status(401).json({
+      return res.status(400).json({
         error: errors.mapped(),
         value: { email, password },
       });
@@ -55,7 +55,7 @@ const loginController = async (req, res) => {
         );
         return res.status(200).json({ msg: "Login Successfull", token, user });
       } else {
-        return res.status(400).json({error:"password not matched"});
+        return res.status(400).json({error:"Password does not matched"});
       }
     } else {
       return res.status(401).json({error:"User not Found"});  
