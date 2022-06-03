@@ -8,11 +8,11 @@ const categoryRoutes = require("./routes/categoryRoutes")
 const productRoutes = require("./routes/productRoutes")
 
 // parsor
-app.use(express.json())
 app.use(cors())
+app.use(express.json())
 
 // connect DB
-connectDB()
+connectDB() 
 
 // routes 
 app.use('/auth', authRoutes) 
