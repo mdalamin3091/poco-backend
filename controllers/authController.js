@@ -71,11 +71,10 @@ const loginController = async (req, res) => {
     return res.status(500).json(error);
   }
 };
-
+// update Profile
 const updateProfile = async (req, res) => {
   try {
     const { _id } = req.body;
-    console.log(req.body)
     const updateProfileInfo = await User.findOneAndUpdate(
       { _id },
       {
@@ -87,16 +86,51 @@ const updateProfile = async (req, res) => {
         new: true,
       }
     );
-    res
-      .status(200)
-      .json({ msg: "Profile update successfull", updateUser: updateProfileInfo });
+    res.status(200).json({
+      msg: "Profile update successfull",
+      updateUser: updateProfileInfo,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
+  }
+};
+
+// change password
+const changePassword = async (req, res) => {
+  try {
+    const { email, oldPassword, newPassword } = req.body;
+    const existUser = await User.findOne({ email });
+    if (existUser) {
+      if (await bcrypt.compare(oldPassword, existUser.password)) {
+        const updatePassword = await User.findOneAndUpdate(
+          { email },
+          {
+            $set: {
+              password: await bcrypt.hash(newPassword, 10),
+            },
+          },
+          {
+            new: true,
+          }
+        );
+        return res
+          .status(200)
+          .json({ msg: "Password changed", updateUser: updatePassword });
+      } else {
+        return res.status(400).json({ error: "Old password does not matched" });
+      }
+    } else {
+      return res.status(400).json({ error: "Email Not valid" });
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("Internal server error");
   }
 };
 module.exports = {
   signupController,
   loginController,
   updateProfile,
+  changePassword,
 };
