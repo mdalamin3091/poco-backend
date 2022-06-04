@@ -3,7 +3,7 @@ const errorFormater = require("../utils/errorFormater");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const { JWT_SECRET } = require("../config/envConfig")
+const { JWT_SECRET } = require("../config/envConfig");
 
 // sign up
 const signupController = async (req, res) => {
@@ -17,17 +17,23 @@ const signupController = async (req, res) => {
       });
     }
     const newUser = await User.create({
-      fullname, 
+      fullname,
       email,
       profilePic,
       password: await bcrypt.hash(password, 10),
     });
     const token = jwt.sign(
-      { id: newUser._id, fullname: newUser.fullname, password: newUser.password },
+      {
+        id: newUser._id,
+        fullname: newUser.fullname,
+        password: newUser.password,
+      },
       JWT_SECRET,
       { expiresIn: "1 d" }
     );
-    return res.status(201).json({ msg: "Your account successfully created", newUser, token });
+    return res
+      .status(201)
+      .json({ msg: "Your account successfully created", newUser, token });
   } catch (error) {
     console.log(error);
     return res.status(500).json(error);
@@ -55,18 +61,42 @@ const loginController = async (req, res) => {
         );
         return res.status(200).json({ msg: "Login Successfull", token, user });
       } else {
-        return res.status(400).json({error:"Password does not matched"});
+        return res.status(400).json({ error: "Password does not matched" });
       }
     } else {
-      return res.status(401).json({error:"User not Found"});  
-    } 
+      return res.status(401).json({ error: "User not Found" });
+    }
   } catch (error) {
     console.log(error);
-    return res.status(500).json(error);   
+    return res.status(500).json(error);
   }
 };
 
+const updateProfile = async (req, res) => {
+  try {
+    const { _id } = req.body;
+    console.log(req.body)
+    const updateProfileInfo = await User.findOneAndUpdate(
+      { _id },
+      {
+        $set: {
+          ...req.body,
+        },
+      },
+      {
+        new: true,
+      }
+    );
+    res
+      .status(200)
+      .json({ msg: "Profile update successfull", updateUser: updateProfileInfo });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json(error);
+  }
+};
 module.exports = {
   signupController,
   loginController,
+  updateProfile,
 };
