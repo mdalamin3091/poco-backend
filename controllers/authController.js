@@ -71,6 +71,7 @@ const loginController = async (req, res) => {
     return res.status(500).json(error);
   }
 };
+
 // update Profile
 const updateProfile = async (req, res) => {
   try {
@@ -128,9 +129,46 @@ const changePassword = async (req, res) => {
     return res.status(500).json("Internal server error");
   }
 };
+
+// get all user
+const getAllUser = async (req, res) => {
+  try {
+    const allUser = await User.find({});
+    return res.status(200).json({ allUser });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("Internal server error");
+  }
+};
+
+// update user role
+const updateUserRole = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { role } = req.body;
+    const updateRole = await User.findByIdAndUpdate(
+      { _id: id },
+      {
+        $set: { 
+          role,
+        },
+      },
+      { 
+        new: true,
+      }
+    );
+    return res.status(200).json({ updateRole });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("Internal server error");
+  }
+};
+
 module.exports = {
   signupController,
   loginController,
   updateProfile,
   changePassword,
+  getAllUser,
+  updateUserRole,
 };
