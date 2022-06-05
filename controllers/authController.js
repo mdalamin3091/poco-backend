@@ -134,10 +134,10 @@ const changePassword = async (req, res) => {
 const getAllUser = async (req, res) => {
   try {
     const allUser = await User.find({});
-    return res.status(200).json({ allUser });
+    return res.status(200).json({ allUser, totalUser: allUser.length });
   } catch (error) {
     console.log(error);
-    return res.status(500).json("Internal server error");
+    return res.status(500).json("Internal server error"); 
   }
 };
 
@@ -149,20 +149,35 @@ const updateUserRole = async (req, res) => {
     const updateRole = await User.findByIdAndUpdate(
       { _id: id },
       {
-        $set: { 
+        $set: {
           role,
         },
       },
-      { 
+      {
         new: true,
       }
     );
-    return res.status(200).json({ updateRole });
+    return res
+      .status(200)
+      .json({ msg: "Successfully user role updated", updateRole });
   } catch (error) {
     console.log(error);
     return res.status(500).json("Internal server error");
   }
 };
+
+// delete User
+const deleteUser = async (req, res) =>{
+  try {
+    const {id} = req.params;
+    const deleteUser = await User.findByIdAndDelete({_id:id})
+    console.log(deleteUser)
+    res.status(200).json({msg:"Successfully User deleted", deleteUser})
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("Internal server error");
+  }
+}
 
 module.exports = {
   signupController,
@@ -171,4 +186,5 @@ module.exports = {
   changePassword,
   getAllUser,
   updateUserRole,
+  deleteUser
 };

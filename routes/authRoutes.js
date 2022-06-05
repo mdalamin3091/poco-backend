@@ -5,7 +5,8 @@ const {
   updateProfile,
   changePassword,
   getAllUser,
-  updateUserRole
+  updateUserRole,
+  deleteUser
 } = require("../controllers/authController");
 const { signupValidation } = require("../validations/authValidation");
 const authorized = require("../middlewares/authorized");
@@ -15,5 +16,6 @@ router.get("/allUsers", getAllUser);
 router.put("/updateProfile",  updateProfile);
 router.put("/changePassword",  changePassword);
 router.put("/updateRole/:id",  updateUserRole);
+router.delete("/deleteUser/:id",  deleteUser);
 
 module.exports = router; 
