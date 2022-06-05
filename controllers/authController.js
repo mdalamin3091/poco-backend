@@ -29,7 +29,7 @@ const signupController = async (req, res) => {
         password: newUser.password,
       },
       JWT_SECRET,
-      { expiresIn: "1 d" }
+      { expiresIn: "7 d" }
     );
     return res
       .status(201)
@@ -57,7 +57,7 @@ const loginController = async (req, res) => {
         const token = jwt.sign(
           { id: user._id, fullname: user.fullname, password: user.password },
           JWT_SECRET,
-          { expiresIn: "1 d" }
+          { expiresIn: "7 d" }  
         );
         return res.status(200).json({ msg: "Login Successfull", token, user });
       } else {

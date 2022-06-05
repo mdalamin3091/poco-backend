@@ -7,7 +7,7 @@ const createCategoryController = async (req, res) => {
   const { categoryName, categoryImage } = req.body;
   const errors = validationResult(req).formatWith(errorFormater);
   if (!errors.isEmpty()) {
-    res
+    return res
       .status(400)
       .json({ error: errors.mapped(), value: { categoryName, categoryImage } });
   }
@@ -18,23 +18,40 @@ const createCategoryController = async (req, res) => {
       categoryImage,
     });
     const createCategory = await category.save();
-    res.status(200).json("Category Created", createCategory);
+    res.status(200).json({ msg: "Category Created", createCategory });
   } catch (error) {
     console.log(error);
     return res.status(500).json("Internal Server Error");
   }
 };
+
 // get all category
 const getAllCategoryController = async (req, res) => {
   try {
     const allCategory = await Category.find({});
-    console.log(allCategory);
-    res.status(200).json("All category", allCategory);
+    return res
+      .status(200)
+      .json({ allCategory });
   } catch (error) {
     console.log(error);
     return res.status(500).json("Internal Server Error");
   }
 };
+
+// get single Category =
+const getCategoryController = async (req, res) => {
+  try {
+    const { categoryId } = req.params;
+    console.log(categoryId);
+    const category = await Category.findOne({ _id: categoryId });
+    console.log(category);
+    return res.status(200).json({ category });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("Internal Server Error");
+  }
+};
+
 // update category
 const updateCategoryController = async (req, res) => {
   try {
@@ -61,7 +78,8 @@ const updateCategoryController = async (req, res) => {
       },
       { new: true }
     );
-    return res.status(200).json("Category Updated", updateCategory);
+    console.log(updateCategory);
+    return res.status(200).json({ msg: "Category Updated", updateCategory });
   } catch (error) {
     console.log(error);
     return res.status(500).json("Internal Server Error");
@@ -78,9 +96,10 @@ const deleteCategoryController = async (req, res) => {
     const deleteCategory = await Category.findByIdAndDelete({
       _id: categoryId,
     });
-    res
-      .status(200)
-      .json("Delete your category with this category product", deleteCategory);
+    return res.status(200).json({
+      msg: "Delete your category with this category product",
+      deleteCategory,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json("Internal Server Error");
@@ -90,6 +109,7 @@ const deleteCategoryController = async (req, res) => {
 module.exports = {
   createCategoryController,
   getAllCategoryController,
+  getCategoryController,
   updateCategoryController,
   deleteCategoryController,
 };
