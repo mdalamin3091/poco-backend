@@ -1,11 +1,5 @@
 const { body } = require("express-validator");
 const productValidation = [
-  body("name")
-    .notEmpty()
-    .withMessage("Product Name is required")
-    .isLength({ max: 50 })
-    .withMessage("Product name must finish 50 characters")
-    .trim(),
   body("title")
     .notEmpty()
     .withMessage("Product title is required")
@@ -21,6 +15,16 @@ const productValidation = [
     .notEmpty()
     .trim()
     .withMessage("Product category is required"),
+  body("shortDescription")
+    .notEmpty()
+    .trim()
+    .withMessage("Short Description is required")
+    .isLength({ max: 500 })
+    .withMessage("Short Description must finish 250 characters"),
+  body("description")
+    .notEmpty()
+    .trim()
+    .withMessage("Description is required"),
 ];
 
 module.exports = productValidation;

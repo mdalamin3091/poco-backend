@@ -6,16 +6,20 @@ const {
   changePassword,
   getAllUser,
   updateUserRole,
-  deleteUser
+  deleteUser,
+  productWishlist,
+  singleUser,
 } = require("../controllers/authController");
 const { signupValidation } = require("../validations/authValidation");
 const authorized = require("../middlewares/authorized");
 router.post("/signup", signupValidation, signupController);
 router.post("/login", loginController);
-router.get("/allUsers", getAllUser);
-router.put("/updateProfile",  updateProfile);
-router.put("/changePassword",  changePassword);
-router.put("/updateRole/:id",  updateUserRole);
-router.delete("/deleteUser/:id",  deleteUser);
+router.get("/allUsers", authorized, getAllUser);
+router.get("/wishlist/:productId", authorized, productWishlist);
+router.get("/singleUser", authorized, singleUser);
+router.put("/updateProfile", authorized, updateProfile);
+router.put("/changePassword", authorized, changePassword);
+router.put("/updateRole/:id", authorized, updateUserRole);
+router.delete("/deleteUser/:id", authorized, deleteUser);
 
-module.exports = router; 
+module.exports = router;

@@ -57,7 +57,7 @@ const loginController = async (req, res) => {
         const token = jwt.sign(
           { id: user._id, fullname: user.fullname, password: user.password },
           JWT_SECRET,
-          { expiresIn: "7 d" }  
+          { expiresIn: "7 d" }
         );
         return res.status(200).json({ msg: "Login Successfull", token, user });
       } else {
@@ -137,7 +137,7 @@ const getAllUser = async (req, res) => {
     return res.status(200).json({ allUser, totalUser: allUser.length });
   } catch (error) {
     console.log(error);
-    return res.status(500).json("Internal server error"); 
+    return res.status(500).json("Internal server error");
   }
 };
 
@@ -167,14 +167,51 @@ const updateUserRole = async (req, res) => {
 };
 
 // delete User
-const deleteUser = async (req, res) =>{
+const deleteUser = async (req, res) => {
   try {
-    const {id} = req.params;
-    const deleteUser = await User.findByIdAndDelete({_id:id})
-    console.log(deleteUser)
-    res.status(200).json({msg:"Successfully User deleted", deleteUser})
+    const { id } = req.params;
+    const deleteUser = await User.findByIdAndDelete({ _id: id });
+    console.log(deleteUser);
+    res.status(200).json({ msg: "Successfully User deleted", deleteUser });
   } catch (error) {
     console.log(error);
+    return res.status(500).json("Internal server error");
+  }
+};
+
+// product wishlist
+const productWishlist = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { productId } = req.params;
+    const user = await User.findByIdAndUpdate(
+      { _id: userId },
+      {
+        $push: {
+          wishlist: productId,
+        },
+      },
+      {
+        new: true,
+      }
+    );
+    console.log(user);
+    return res.status(200).json({ user });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("Internal server error");
+  }
+};
+
+// get single user
+const singleUser = async (req, res) =>{
+  try {
+    const userId = req.userId;
+    const user = await User.findOne({_id:userId}).populate("wishlist")
+    console.log(user)
+    return res.status(200).json({user})
+  } catch (error) {
+    console.log(error)
     return res.status(500).json("Internal server error");
   }
 }
@@ -186,5 +223,7 @@ module.exports = {
   changePassword,
   getAllUser,
   updateUserRole,
-  deleteUser
+  deleteUser,
+  productWishlist,
+  singleUser
 };

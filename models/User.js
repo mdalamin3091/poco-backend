@@ -26,10 +26,12 @@ const userSchema = new Schema(
       type: String,
       default: "https://i.ibb.co/7KGjCY4/download-removebg-preview.png",
     },
-    wishlist: {
-      type: Schema.Types.ObjectId,
-      ref: "Product",
-    },
+    wishlist: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
     orders: [
       {
         type: Schema.Types.ObjectId,
