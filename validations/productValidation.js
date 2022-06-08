@@ -19,7 +19,7 @@ const productValidation = [
     .notEmpty()
     .trim()
     .withMessage("Short Description is required")
-    .isLength({ max: 500 })
+    .isLength({ max: 250 })
     .withMessage("Short Description must finish 250 characters"),
   body("description")
     .notEmpty()

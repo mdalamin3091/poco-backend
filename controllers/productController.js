@@ -6,7 +6,7 @@ const Category = require("../models/Category");
 // create product
 const createProductController = async (req, res) => {
   try {
-    const { name, title, price, description, category } = req.body;
+    const { name, title, price, description, category, productImages, shortDescription } = req.body;
     const errors = validationResult(req).formatWith(errorFormater);
     if (!errors.isEmpty()) {
       console.log(errors.mapped());
@@ -16,7 +16,9 @@ const createProductController = async (req, res) => {
       title,
       price,
       description,
+      shortDescription,
       category,
+      images:productImages,
     });
     const createProduct = await product.save();
     res
@@ -87,8 +89,7 @@ const getSingleProductController = async (req, res) => {
   try {
     const { productId } = req.params;
     const getProduct = await Product.findByIdAndUpdate({ _id: productId });
-    console.log(getProduct);
-    res.status(200).json("Product", getProduct);
+    return res.status(200).json({msg:"Single product found", getProduct});
   } catch (error) {
     console.log(error);
     return res.status(500).json("Internal Server Error");

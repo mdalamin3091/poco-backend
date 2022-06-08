@@ -184,19 +184,36 @@ const productWishlist = async (req, res) => {
   try {
     const userId = req.userId;
     const { productId } = req.params;
-    const user = await User.findByIdAndUpdate(
-      { _id: userId },
-      {
-        $push: {
-          wishlist: productId,
+    const user = await User.findOne({ _id: userId });
+    let wishlist = null;
+    if (user.wishlist.includes(productId)) {
+      await User.findByIdAndUpdate(
+        { _id: userId },
+        {
+          $pull: {
+            wishlist: productId,
+          },
         },
-      },
-      {
-        new: true,
-      }
-    );
-    console.log(user);
-    return res.status(200).json({ user });
+        {
+          new: true,
+        }
+      );
+      wishlist = true;
+    } else {
+      await User.findByIdAndUpdate(
+        { _id: userId },
+        {
+          $push: {
+            wishlist: productId,
+          },
+        },
+        {
+          new: true,
+        }
+      );
+      wishlist = false;
+    }
+    return res.status(200).json({ wishlist });
   } catch (error) {
     console.log(error);
     return res.status(500).json("Internal server error");
@@ -204,17 +221,16 @@ const productWishlist = async (req, res) => {
 };
 
 // get single user
-const singleUser = async (req, res) =>{
+const singleUser = async (req, res) => {
   try {
     const userId = req.userId;
-    const user = await User.findOne({_id:userId}).populate("wishlist")
-    console.log(user)
-    return res.status(200).json({user})
+    const user = await User.findOne({ _id: userId }).populate("wishlist");
+    return res.status(200).json({ user });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     return res.status(500).json("Internal server error");
   }
-}
+};
 
 module.exports = {
   signupController,
@@ -225,5 +241,5 @@ module.exports = {
   updateUserRole,
   deleteUser,
   productWishlist,
-  singleUser
+  singleUser,
 };

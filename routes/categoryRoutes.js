@@ -16,12 +16,10 @@ router.post(
 );
 router.get(
   "/",
-  authorized,
   getAllCategoryController
 );
 router.get(
   "/:categoryId",
-  authorized,
   getCategoryController
 );
 router.put(

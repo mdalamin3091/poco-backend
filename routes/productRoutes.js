@@ -15,8 +15,8 @@ router.post(
   productValidation,
   createProductController
 );
-router.get("/", authorized, getAllProductController);
-router.get("/search", authorized, searchProductController);
+router.get("/", getAllProductController);
+router.get("/search", searchProductController);
 router.put(
   "/updateProduct/:productId",
   authorized,
