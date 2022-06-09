@@ -32,7 +32,13 @@ const userSchema = new Schema(
         ref: "Product",
       },
     ],
-    orders: [
+    cart: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Product",
+      },
+    ],
+    order: [
       {
         type: Schema.Types.ObjectId,
         ref: "Order",

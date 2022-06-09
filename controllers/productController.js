@@ -2,6 +2,7 @@ const { validationResult } = require("express-validator");
 const errorFormater = require("../utils/errorFormater");
 const Product = require("../models/Product");
 const Review = require("../models/Review");
+const User = require("../models/User");
 
 // create product
 const createProductController = async (req, res) => {
@@ -97,7 +98,10 @@ const getSingleProductController = async (req, res) => {
     const { productId } = req.params;
     const getProduct = await Product.findOne({ _id: productId }).populate({
       path: "review",
-    })
+      populate: {
+        path: "user",
+      },
+    });
     return res.status(200).json({ msg: "Single product found", getProduct });
   } catch (error) {
     console.log(error);
@@ -138,7 +142,7 @@ const addProductReview = async (req, res) => {
       ratingStar,
     });
     const addReview = await review.save();
-    const productWithReivew = await Product.findOneAndUpdate(
+    await Product.findOneAndUpdate(
       { _id: productId },
       {
         $push: {
@@ -158,6 +162,50 @@ const addProductReview = async (req, res) => {
   }
 };
 
+// add to cart product
+const addProductInCart = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { productId } = req.params;
+    const user = await User.findOne({ _id: userId });
+    let addToCart = null;
+    let msg;
+    if (user.cart.includes(productId)) {
+      await User.findOneAndUpdate(
+        { _id: userId },
+        {
+          $pull: {
+            cart: productId,
+          },
+        },
+        {
+          new: true,
+        }
+      );
+      addToCart = false;
+      msg = "Product Remove your cart"
+    } else {
+      await User.findOneAndUpdate(
+        { _id: userId }, 
+        {
+          $push: {
+            cart: productId,
+          },
+        },
+        {
+          new: true,
+        }
+      );
+      addToCart = true;
+      msg = "Product add your cart"
+    } 
+    return res.status(200).json({ msg, addToCart });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json("Internal server error");
+  }
+};
+
 module.exports = {
   getSingleProductController,
   getAllProductController,
@@ -166,4 +214,5 @@ module.exports = {
   deleteProductController,
   searchProductController,
   addProductReview,
+  addProductInCart,
 };

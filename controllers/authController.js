@@ -198,7 +198,7 @@ const productWishlist = async (req, res) => {
           new: true,
         }
       );
-      wishlist = true;
+      wishlist = false;
     } else {
       await User.findByIdAndUpdate(
         { _id: userId },
@@ -211,7 +211,7 @@ const productWishlist = async (req, res) => {
           new: true,
         }
       );
-      wishlist = false;
+      wishlist = true;
     }
     return res.status(200).json({ wishlist });
   } catch (error) {
@@ -224,7 +224,10 @@ const productWishlist = async (req, res) => {
 const singleUser = async (req, res) => {
   try {
     const userId = req.userId;
-    const user = await User.findOne({ _id: userId }).populate("wishlist");
+    const user = await User.findOne({ _id: userId })
+      .populate("wishlist")
+      .populate("cart")
+      // .populate("order")
     return res.status(200).json({ user });
   } catch (error) {
     console.log(error);
