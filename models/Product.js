@@ -38,12 +38,12 @@ const productSchema = new Schema(
         ref: "Review",
       },
     ],
-    rating: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Review",
-      },
-    ],
+    // rating: [
+    //   {
+    //     type: Schema.Types.ObjectId,
+    //     ref: "Review",
+    //   },
+    // ],
   },
   {
     timestamps: true,

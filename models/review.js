@@ -6,7 +6,7 @@ const reviewSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
-    name: {
+    fullname: {
       type: String,
       required: true,
     },
@@ -14,7 +14,7 @@ const reviewSchema = new Schema(
       type: String,
       required: true,
     },
-    rating: {
+    ratingStar: {
       type: Number,
       required: true,
     },

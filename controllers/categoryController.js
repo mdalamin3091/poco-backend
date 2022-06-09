@@ -57,10 +57,10 @@ const updateCategoryController = async (req, res) => {
   try {
     const { categoryId } = req.params;
     const findCategory = await Category.findOne({ _id: categoryId });
-    const findProduct = await Product.find({
+     await Product.find({
       category: findCategory.categoryName,
     });
-    const updateProduct = await Product.updateMany(
+    await Product.updateMany(
       { category: findCategory.categoryName },
       {
         $set: {
