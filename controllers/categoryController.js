@@ -78,7 +78,6 @@ const updateCategoryController = async (req, res) => {
       },
       { new: true }
     );
-    console.log(updateCategory);
     return res.status(200).json({ msg: "Category Updated", updateCategory });
   } catch (error) {
     console.log(error);

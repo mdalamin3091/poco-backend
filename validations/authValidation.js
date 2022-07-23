@@ -17,7 +17,6 @@ const signupValidation = [
     .withMessage("password should be 6 characters long"),
 ];
 
-   
 module.exports = {
   signupValidation,
 };

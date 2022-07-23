@@ -4,7 +4,7 @@ const {
   getAllCategoryController,
   updateCategoryController,
   deleteCategoryController,
-  getCategoryController
+  getCategoryController,
 } = require("../controllers/categoryController");
 const authorized = require("../middlewares/authorized");
 const categoryValidation = require("../validations/categoryValidation");
@@ -14,14 +14,8 @@ router.post(
   categoryValidation,
   createCategoryController
 );
-router.get(
-  "/",
-  getAllCategoryController
-);
-router.get(
-  "/:categoryId",
-  getCategoryController
-);
+router.get("/", getAllCategoryController);
+router.get("/:categoryId", getCategoryController);
 router.put(
   "/updateCategory/:categoryId",
   authorized,

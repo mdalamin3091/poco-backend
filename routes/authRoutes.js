@@ -19,7 +19,7 @@ router.get("/wishlist/:productId", authorized, productWishlist);
 router.get("/singleUser", authorized, singleUser);
 router.put("/updateProfile", authorized, updateProfile);
 router.put("/changePassword", authorized, changePassword);
-router.put("/updateRole/:id", authorized, updateUserRole);
+router.put("/updateRole/:id", authorized, updateUserRole); 
 router.delete("/deleteUser/:id", authorized, deleteUser);
 
 module.exports = router;

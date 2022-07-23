@@ -43,22 +43,14 @@ const createProductController = async (req, res) => {
 const updateProductController = async (req, res) => {
   try {
     const { productId } = req.params;
-    const { name, title, price, description, category } = req.body;
+    console.log(req.body)
     const errors = validationResult(req).formatWith(errorFormater);
     if (!errors.isEmpty()) {
       console.log(errors.mapped());
     }
     const updateProduct = await Product.findByIdAndUpdate(
       { _id: productId },
-      {
-        $set: {
-          name,
-          title,
-          price,
-          description,
-          category,
-        },
-      },
+      req.body,
       { new: true }
     );
     res.status(200).json({ msg: "Product updated", updateProduct });
@@ -183,10 +175,10 @@ const addProductInCart = async (req, res) => {
         }
       );
       addToCart = false;
-      msg = "Product Remove your cart"
+      msg = "Product Remove your cart";
     } else {
       await User.findOneAndUpdate(
-        { _id: userId }, 
+        { _id: userId },
         {
           $push: {
             cart: productId,
@@ -197,8 +189,8 @@ const addProductInCart = async (req, res) => {
         }
       );
       addToCart = true;
-      msg = "Product add your cart"
-    } 
+      msg = "Product add your cart";
+    }
     return res.status(200).json({ msg, addToCart });
   } catch (error) {
     console.log(error);
