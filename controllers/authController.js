@@ -186,6 +186,7 @@ const productWishlist = async (req, res) => {
     const { productId } = req.params;
     const user = await User.findOne({ _id: userId });
     let wishlist = null;
+    let msg;
     if (user.wishlist.includes(productId)) {
       await User.findByIdAndUpdate(
         { _id: userId },
@@ -199,6 +200,7 @@ const productWishlist = async (req, res) => {
         }
       );
       wishlist = false;
+      msg = "Product remove your wishlist"
     } else {
       await User.findByIdAndUpdate(
         { _id: userId },
@@ -212,8 +214,9 @@ const productWishlist = async (req, res) => {
         }
       );
       wishlist = true;
+      msg = "Product added your wishlist"
     }
-    return res.status(200).json({ wishlist });
+    return res.status(200).json({ wishlist, msg });
   } catch (error) {
     console.log(error);
     return res.status(500).json("Internal server error");

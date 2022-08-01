@@ -7,6 +7,7 @@ const categorySchema = new Schema(
       required: true,
       maxlength: 15,
       trim: true,
+      default:"Pizza"
     },
     categoryImage: {
       type: String,

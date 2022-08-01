@@ -43,7 +43,7 @@ const createProductController = async (req, res) => {
 const updateProductController = async (req, res) => {
   try {
     const { productId } = req.params;
-    console.log(req.body)
+    console.log(req.body);
     const errors = validationResult(req).formatWith(errorFormater);
     if (!errors.isEmpty()) {
       console.log(errors.mapped());
@@ -75,11 +75,9 @@ const deleteProductController = async (req, res) => {
 // get all product
 const getAllProductController = async (req, res) => {
   try {
-    // const { category } = req.query;
-    const allProducts = await Product.find();
+    const allProducts = await Product.find({});
     return res.status(200).json({ msg: "All product", allProducts });
   } catch (error) {
-    console.log(error);
     return res.status(500).json("Internal Server Error");
   }
 };
