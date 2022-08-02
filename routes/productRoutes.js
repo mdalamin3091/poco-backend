@@ -5,10 +5,12 @@ const {
   getAllProductController,
   deleteProductController,
   getSingleProductController,
-  searchProductController,
   addProductReview,
   orderController,
-  saveCheckOutInfo
+  saveCheckOutInfo,
+  getAllOrders,
+  getAllReview,
+  updateOrderStatus,
 } = require("../controllers/productController");
 const productValidation = require("../validations/productValidation");
 const authorized = require("../middlewares/authorized");
@@ -19,7 +21,9 @@ router.post(
   createProductController
 );
 router.get("/", getAllProductController);
-router.get("/search", searchProductController);
+router.get("/allOrder", authorized,  getAllOrders);
+router.put("/updateOrder/:id", authorized,  updateOrderStatus);
+router.get("/allReview", authorized, getAllReview);
 router.put(
   "/updateProduct/:productId",
   authorized,
@@ -31,5 +35,6 @@ router.get("/:productId", getSingleProductController);
 router.post("/review/:productId", authorized, addProductReview);
 router.post("/create-payment-intent", authorized, orderController);
 router.post("/saveOrderInfo", authorized, saveCheckOutInfo);
+
 
 module.exports = router;

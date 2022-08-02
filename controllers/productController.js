@@ -78,7 +78,12 @@ const deleteProductController = async (req, res) => {
 // get all product
 const getAllProductController = async (req, res) => {
   try {
-    const allProducts = await Product.find({});
+    const allProducts = await Product.find({}).populate({
+      path: "review",
+      populate: {
+        path: "user",
+      },
+    });
     return res.status(200).json({ msg: "All product", allProducts });
   } catch (error) {
     return res.status(500).json("Internal Server Error");
@@ -96,25 +101,6 @@ const getSingleProductController = async (req, res) => {
       },
     });
     return res.status(200).json({ msg: "Single product found", getProduct });
-  } catch (error) {
-    console.log(error);
-    return res.status(500).json("Internal Server Error");
-  }
-};
-
-// search product query
-const searchProductController = async (req, res) => {
-  try {
-    const { category } = req.query;
-    let query = {};
-    if (category !== null) {
-      query.category = category;
-    }
-    const products = await Product.find(query);
-    if (products.length < 1) {
-      return res.status(200).json({ msg: "Product not found" });
-    }
-    res.status(200).json({ msg: "Product found", products });
   } catch (error) {
     console.log(error);
     return res.status(500).json("Internal Server Error");
@@ -223,22 +209,64 @@ const saveCheckOutInfo = async (req, res) => {
         new: true,
       }
     );
-    console.log(updateUser)
+    console.log(updateUser);
     return res.status(200).json({ msg: "Success", saveOrder, updateUser });
-  } catch (error) { 
+  } catch (error) {
     console.log(error);
     return res.status(500).json("Internal server error");
   }
 };
 
+// get all order controller
+const getAllOrders = async (req, res) => {
+  try {
+    const allOrder = await Order.find({});
+    return res.status(200).json({ msg: "All Order", allOrder });
+  } catch (error) {
+    return res.status(500).json("Internal Server Error");
+  }
+};
+
+// update order status
+const updateOrderStatus = async (req, res) => {
+  try {
+    const { selectStatus } = req.body;
+    const { id } = req.params;
+    const updateStatus = await Order.findByIdAndUpdate(
+      { _id: id },
+      { orderStatus: selectStatus },
+      {
+        new: true,
+      }
+    );
+    res
+      .status(200)
+      .json({ msg: `Order ${updateStatus.orderStatus}`, updateStatus });
+  } catch (error) {
+    return res.status(500).json("Internal Server Error");
+  }
+};
+
+// all review controller
+const getAllReview = async (req, res) => {
+  try {
+    const allReview = await Review.find({});
+    return res.status(200).json({ msg: "All Review", allReview });
+  } catch (error) {
+    console.log(error);
+    return res.json(500).json("Internal Server Error");
+  }
+};
 module.exports = {
   getSingleProductController,
   getAllProductController,
   createProductController,
   updateProductController,
   deleteProductController,
-  searchProductController,
+  getAllOrders,
   saveCheckOutInfo,
   addProductReview,
   orderController,
+  getAllReview,
+  updateOrderStatus,
 };

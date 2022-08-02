@@ -133,8 +133,9 @@ const changePassword = async (req, res) => {
 // get all user
 const getAllUser = async (req, res) => {
   try {
-    const allUser = await User.find({});
-    return res.status(200).json({ allUser, totalUser: allUser.length });
+    const allUser = await User.find({}).populate("wishlist");
+    const totalWishlist = allUser.reduce((acc, curr) => acc + curr.wishlist.length, 0)
+    return res.status(200).json({ allUser, totalUser: allUser.length, totalWishlist });
   } catch (error) {
     console.log(error);
     return res.status(500).json("Internal server error");
@@ -229,8 +230,8 @@ const singleUser = async (req, res) => {
     const userId = req.userId;
     const user = await User.findOne({ _id: userId })
       .populate("wishlist")
-      .populate("cart")
-      // .populate("order")
+      .populate("order")
+      console.log(user)
     return res.status(200).json({ user });
   } catch (error) {
     console.log(error);
