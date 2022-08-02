@@ -238,6 +238,7 @@ const singleUser = async (req, res) => {
   }
 };
 
+
 module.exports = {
   signupController,
   loginController,

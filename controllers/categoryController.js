@@ -42,9 +42,7 @@ const getAllCategoryController = async (req, res) => {
 const getCategoryController = async (req, res) => {
   try {
     const { categoryId } = req.params;
-    console.log(categoryId);
     const category = await Category.findOne({ _id: categoryId });
-    console.log(category);
     return res.status(200).json({ category });
   } catch (error) {
     console.log(error);

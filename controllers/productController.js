@@ -2,7 +2,10 @@ const { validationResult } = require("express-validator");
 const errorFormater = require("../utils/errorFormater");
 const Product = require("../models/Product");
 const Review = require("../models/Review");
+const { STRIPE_SECRET } = require("../config/envConfig");
+const Order = require("../models/Order");
 const User = require("../models/User");
+const stripe = require("stripe")(STRIPE_SECRET);
 
 // create product
 const createProductController = async (req, res) => {
@@ -152,45 +155,77 @@ const addProductReview = async (req, res) => {
   }
 };
 
-// add to cart product
-const addProductInCart = async (req, res) => {
+// order controller
+const orderController = async (req, res) => {
   try {
-    const userId = req.userId;
-    const { productId } = req.params;
-    const user = await User.findOne({ _id: userId });
-    let addToCart = null;
-    let msg;
-    if (user.cart.includes(productId)) {
-      await User.findOneAndUpdate(
-        { _id: userId },
-        {
-          $pull: {
-            cart: productId,
-          },
-        },
-        {
-          new: true,
-        }
-      );
-      addToCart = false;
-      msg = "Product Remove your cart";
-    } else {
-      await User.findOneAndUpdate(
-        { _id: userId },
-        {
-          $push: {
-            cart: productId,
-          },
-        },
-        {
-          new: true,
-        }
-      );
-      addToCart = true;
-      msg = "Product add your cart";
-    }
-    return res.status(200).json({ msg, addToCart });
+    const { totalCost } = req.body;
+    const amount = Number(totalCost) * 100;
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount,
+      currency: "usd",
+      automatic_payment_methods: {
+        enabled: true,
+      },
+    });
+    return res.status(200).json({ clientSecret: paymentIntent.client_secret });
   } catch (error) {
+    console.log(error);
+    return res.status(500).json("Internal server error");
+  }
+};
+
+// save order info controller
+const saveCheckOutInfo = async (req, res) => {
+  try {
+    const {
+      fullname,
+      email,
+      address,
+      city,
+      country,
+      zip,
+      selectedPaymentMethod,
+      shippingCost,
+      totalCost,
+    } = req.body.checkOutInfo;
+    const { last4, transaction } = req.body;
+    const userId = req.userId;
+    const orderInfo = await Order({
+      personalDetails: {
+        fullname,
+        email,
+      },
+      shippingDetails: {
+        address,
+        city,
+        country,
+        zip,
+      },
+      shippingCostAndMethod: {
+        shippingMethod: selectedPaymentMethod,
+        shippingCost,
+      },
+      paymentDetails: {
+        totalCost,
+        transaction,
+        last4,
+      },
+    });
+    const saveOrder = await orderInfo.save();
+    const updateUser = await User.findByIdAndUpdate(
+      { _id: userId },
+      {
+        $push: {
+          order: saveOrder._id,
+        },
+      },
+      {
+        new: true,
+      }
+    );
+    console.log(updateUser)
+    return res.status(200).json({ msg: "Success", saveOrder, updateUser });
+  } catch (error) { 
     console.log(error);
     return res.status(500).json("Internal server error");
   }
@@ -203,6 +238,7 @@ module.exports = {
   updateProductController,
   deleteProductController,
   searchProductController,
+  saveCheckOutInfo,
   addProductReview,
-  addProductInCart,
+  orderController,
 };

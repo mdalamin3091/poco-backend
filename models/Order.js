@@ -2,65 +2,56 @@ const { Schema, model } = require("mongoose");
 
 const orderSchema = new Schema(
   {
-    personalDetails: [
-      {
-        fullName: {
-          type: String,
-          required: true,
-          trim: true,
-        },
-        email: {
-          type: String,
-          required: true,
-        },
+    personalDetails: {
+      fullname: {
+        type: String,
+        required: true,
+        trim: true,
       },
-    ],
-    shippingDetails: [
-      {
-        streetAddress: {
-          type: String,
-          required: true,
-          trim: true,
-        },
-        city: {
-          type: String,
-          required: true,
-        },
-        country: {
-          type: String,
-          required: true,
-        },
-        zip: {
-          type: String,
-          required: true,
-        },
+      email: {
+        type: String,
+        required: true,
       },
-    ],
-    shippingCostAndMethod: [
-      {
-        shippingMethod: {
-          type: String,
-          required: true,
-        },
-        shippingCost: {
-          type: Number,
-          required: true,
-        },
+    },
+    shippingDetails: {
+      address: {
+        type: String,
+        required: true,
+        trim: true,
       },
-    ],
-    paymentDetails: [
-      {
-        COD: String,
-        creditCart: {
-          cartNumber: {
-            type: Number,
-          },
-        },
-        subtotal: Number,
-        totalCost: Number,
-        disCount: Number,
+      city: {
+        type: String,
+        required: true,
       },
-    ],
+      country: {
+        type: String,
+        required: true,
+      },
+      zip: {
+        type: String,
+        required: true,
+      },
+    },
+    shippingCostAndMethod: {
+      shippingMethod: {
+        type: String,
+        required: true,
+      },
+      shippingCost: {
+        type: Number,
+        required: true,
+      },
+    },
+    paymentDetails: {
+      totalCost: Number,
+      transaction: String,
+      last4: String,
+    },
+    orderStatus: {
+      type: String,
+      enum: ["Pending", "Cencle", "Processing", "Delivered"],
+      default: "Pending",
+    },
   },
   {
     timestamps: true,

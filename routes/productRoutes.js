@@ -7,7 +7,8 @@ const {
   getSingleProductController,
   searchProductController,
   addProductReview,
-  addProductInCart,
+  orderController,
+  saveCheckOutInfo
 } = require("../controllers/productController");
 const productValidation = require("../validations/productValidation");
 const authorized = require("../middlewares/authorized");
@@ -28,6 +29,7 @@ router.put(
 router.delete("/deleteProduct/:productId", authorized, deleteProductController);
 router.get("/:productId", getSingleProductController);
 router.post("/review/:productId", authorized, addProductReview);
-router.post("/addToCart/:productId", authorized, addProductInCart);
+router.post("/create-payment-intent", authorized, orderController);
+router.post("/saveOrderInfo", authorized, saveCheckOutInfo);
 
 module.exports = router;
