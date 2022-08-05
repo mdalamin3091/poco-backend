@@ -250,7 +250,7 @@ const updateOrderStatus = async (req, res) => {
 // all review controller
 const getAllReview = async (req, res) => {
   try {
-    const allReview = await Review.find({});
+    const allReview = await Review.find({}).populate("user")
     return res.status(200).json({ msg: "All Review", allReview });
   } catch (error) {
     console.log(error);

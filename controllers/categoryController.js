@@ -2,6 +2,7 @@ const Category = require("../models/Category");
 const { validationResult } = require("express-validator");
 const errorFormater = require("../utils/errorFormater");
 const Product = require("../models/Product");
+
 // create category
 const createCategoryController = async (req, res) => {
   const { categoryName, categoryImage } = req.body;

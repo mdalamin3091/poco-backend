@@ -172,7 +172,6 @@ const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
     const deleteUser = await User.findByIdAndDelete({ _id: id });
-    console.log(deleteUser);
     res.status(200).json({ msg: "Successfully User deleted", deleteUser });
   } catch (error) {
     console.log(error);
@@ -231,7 +230,6 @@ const singleUser = async (req, res) => {
     const user = await User.findOne({ _id: userId })
       .populate("wishlist")
       .populate("order")
-      console.log(user)
     return res.status(200).json({ user });
   } catch (error) {
     console.log(error);
