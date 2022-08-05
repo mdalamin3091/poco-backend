@@ -21,4 +21,4 @@ app.use('/api/v1/product', productRoutes)
 
 app.get("/", (req, res) => res.send("In the name of Allah"));
  
-app.listen(port, () => console.log(`server running port: ${port}`)); 
+app.listen(port, () => console.log(`server running port: ${port}`));  
