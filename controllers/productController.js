@@ -79,7 +79,7 @@ const deleteProductController = async (req, res) => {
 const getAllProductController = async (req, res) => {
   try {
     const allProducts = await Product.find({}).populate({
-      path: "review",
+      path: "review", 
       populate: {
         path: "user",
       },
