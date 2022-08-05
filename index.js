@@ -6,13 +6,13 @@ const authRoutes = require("./routes/authRoutes")
 const categoryRoutes = require("./routes/categoryRoutes")
 const productRoutes = require("./routes/productRoutes");
 require("dotenv").config();
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 4000;
 // parsor
 app.use(cors())
 app.use(express.json())
 
 // connect DB
-connectDB() 
+connectDB()  
 
 // routes 
 app.use('/api/v1/auth', authRoutes) 
