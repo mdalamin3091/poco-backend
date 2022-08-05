@@ -1,11 +1,12 @@
 const express = require("express");
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = PORT || 5000;
 const cors = require("cors");
 const connectDB = require("./config/connectDB");
 const authRoutes = require("./routes/authRoutes")
 const categoryRoutes = require("./routes/categoryRoutes")
-const productRoutes = require("./routes/productRoutes")
+const productRoutes = require("./routes/productRoutes");
+const { PORT } = require("./config/envConfig");
 
 // parsor
 app.use(cors())
