@@ -31,7 +31,7 @@ const signupController = async (req, res) => {
       JWT_SECRET,
       { expiresIn: "7 d" }
     );
-    return res
+    res
       .status(201)
       .json({ msg: "Your account successfully created", newUser, token });
   } catch (error) {
@@ -134,8 +134,13 @@ const changePassword = async (req, res) => {
 const getAllUser = async (req, res) => {
   try {
     const allUser = await User.find({}).populate("wishlist");
-    const totalWishlist = allUser.reduce((acc, curr) => acc + curr.wishlist.length, 0)
-    return res.status(200).json({ allUser, totalUser: allUser.length, totalWishlist });
+    const totalWishlist = allUser.reduce(
+      (acc, curr) => acc + curr.wishlist.length,
+      0
+    );
+    return res
+      .status(200)
+      .json({ allUser, totalUser: allUser.length, totalWishlist });
   } catch (error) {
     console.log(error);
     return res.status(500).json("Internal server error");
@@ -200,7 +205,7 @@ const productWishlist = async (req, res) => {
         }
       );
       wishlist = false;
-      msg = "Product remove your wishlist"
+      msg = "Product remove your wishlist";
     } else {
       await User.findByIdAndUpdate(
         { _id: userId },
@@ -214,7 +219,7 @@ const productWishlist = async (req, res) => {
         }
       );
       wishlist = true;
-      msg = "Product added your wishlist"
+      msg = "Product added your wishlist";
     }
     return res.status(200).json({ wishlist, msg });
   } catch (error) {
@@ -229,14 +234,13 @@ const singleUser = async (req, res) => {
     const userId = req.userId;
     const user = await User.findOne({ _id: userId })
       .populate("wishlist")
-      .populate("order")
+      .populate("order");
     return res.status(200).json({ user });
   } catch (error) {
     console.log(error);
     return res.status(500).json("Internal server error");
   }
 };
-
 
 module.exports = {
   signupController,
