@@ -6,7 +6,7 @@ const { STRIPE_SECRET } = require("../config/envConfig");
 const Order = require("../models/Order");
 const User = require("../models/User");
 const stripe = require("stripe")(STRIPE_SECRET);
-
+ 
 // create product
 const createProductController = async (req, res) => {
   try {
