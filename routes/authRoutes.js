@@ -14,7 +14,7 @@ const { signupValidation } = require("../validations/authValidation");
 const authorized = require("../middlewares/authorized");
 router.post("/signup", signupValidation, signupController);
 router.post("/login", loginController);
-router.get("/allUsers", authorized, getAllUser);
+router.get("/allUsers",  getAllUser);
 router.get("/wishlist/:productId", authorized, productWishlist);
 router.get("/singleUser", authorized, singleUser);
 router.put("/updateProfile", authorized, updateProfile);
