@@ -15,7 +15,7 @@ const authorized = async (req, res, next) => {
         return res.status(400).json("Please add a valid token");
       }
     } else {
-      return res.status(400).json("Please add a token");
+      return res.status(400).json({ msg: "Unauthorized User" });
     }
   } catch (error) {
     console.log(error);
